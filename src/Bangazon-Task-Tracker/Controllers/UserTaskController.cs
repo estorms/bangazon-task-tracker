@@ -24,7 +24,9 @@ namespace Bangazon_Task_Tracker.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IQueryable<object> UserTasks = from userTask in context.UserTask select userTask;
+            //Either method below, i.e., without or without explicit SQL syntax, returns desired result
+            IQueryable<object> UserTasks = context.UserTask; 
+            //IQueryable<object> UserTasks = from userTask in context.UserTask select userTask;
 
             if (UserTasks == null)
             {
