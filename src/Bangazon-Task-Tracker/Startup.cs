@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Bangazon_Task_Tracker.Data;
 
 namespace Bangazon_Task_Tracker
 {
@@ -37,7 +39,11 @@ namespace Bangazon_Task_Tracker
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            var connection = @"Server=(localdb)\mssqllocaldb;Database=TaskTracker;Trusted_Connection=True;";
+            services.AddDbContext<BangazonDbContext>(options => options.UseSqlServer(connection));
+
             services.AddMvc();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -49,6 +55,8 @@ namespace Bangazon_Task_Tracker
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
+
+            DbInitializer.Initialize(app.ApplicationServices);
 
             app.UseMvc();
         }
