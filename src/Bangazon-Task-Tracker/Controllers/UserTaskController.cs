@@ -3,17 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Bangazon_Task_Tracker.Data;
+using Bangazon_Task_Tracker.Models;
 
 namespace Bangazon_Task_Tracker.Controllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class UserTaskController : Controller
     {
+
+        private BangazonDbContext context;
+
+        public UserTaskController(BangazonDbContext ctx)
+        {
+            context = ctx;
+        }
+
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            IQueryable<object> UserTasks = from userTask in context.UserTask select userTask;
+
+            if (UserTasks == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(UserTasks);
         }
 
         // GET api/values/5
