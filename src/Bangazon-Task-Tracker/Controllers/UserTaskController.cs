@@ -9,7 +9,7 @@ using Bangazon_Task_Tracker.Models;
 namespace Bangazon_Task_Tracker.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UserTaskController : Controller
     {
 
