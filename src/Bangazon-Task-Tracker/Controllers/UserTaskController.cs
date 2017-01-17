@@ -36,9 +36,28 @@ namespace Bangazon_Task_Tracker.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int id)
         {
-            return "value";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                UserTask userTask = context.UserTask.Single(u => u.UserTaskId == id);
+
+                if (userTask == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(userTask);
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                return NotFound();
+            }
         }
 
         // POST api/values
