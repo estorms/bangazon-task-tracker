@@ -97,8 +97,23 @@ namespace Bangazon_Task_Tracker.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]UserTask userTask)
         {
+            //this method wasn't working until making an explicit association between the id in the annotation/method and userTask
+            userTask.UserTaskId = id;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (userTask == null)
+            {
+                return NotFound();
+            }
+            context.UserTask.Update(userTask);
+            context.SaveChanges();
+
+            return Ok(userTask);
+
         }
 
         // DELETE api/values/5
