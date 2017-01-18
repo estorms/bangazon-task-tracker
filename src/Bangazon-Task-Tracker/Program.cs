@@ -18,7 +18,7 @@ namespace Bangazon_Task_Tracker
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
-
+            
             host.Run();
         }
     }
