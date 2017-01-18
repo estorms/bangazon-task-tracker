@@ -103,9 +103,31 @@ namespace Bangazon_Task_Tracker.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
-        }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try {
+                UserTask userTask = context.UserTask.Single(u => u.UserTaskId == id);
+                if (userTask == null)
+                {
+                    return NotFound();
+                }
+
+                context.UserTask.Remove(userTask);
+                context.SaveChanges();
+
+                return Ok();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                return NotFound();
+            }
+            }
+
 
 
         private bool UserTaskExists(int id)
