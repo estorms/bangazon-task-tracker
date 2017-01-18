@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bangazon_Task_Tracker.Data;
 using Bangazon_Task_Tracker.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bangazon_Task_Tracker.Controllers
 {
@@ -24,7 +26,9 @@ namespace Bangazon_Task_Tracker.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IQueryable<object> UserTasks = from userTask in context.UserTask select userTask;
+            //Either method below, i.e., without or without explicit SQL syntax, returns desired result
+            IQueryable<object> UserTasks = context.UserTask; 
+            //IQueryable<object> UserTasks = from userTask in context.UserTask select userTask;
 
             if (UserTasks == null)
             {
@@ -35,28 +39,115 @@ namespace Bangazon_Task_Tracker.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id}", Name ="GetUserTask")]
+        public IActionResult Get(int id)
         {
-            return "value";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                UserTask userTask = context.UserTask.Single(u => u.UserTaskId == id);
+
+                if (userTask == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(userTask);
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                return NotFound();
+            }
         }
 
         // POST api/values
+        // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        //FromBody means from the body of the request
+        public IActionResult Post([FromBody] UserTask userTask)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            context.UserTask.Add(userTask);
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                if (UserTaskExists(userTask.UserTaskId))
+                {
+                    return new StatusCodeResult(StatusCodes.Status409Conflict);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetUserTask", new { id = userTask.UserTaskId }, userTask);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]UserTask userTask)
         {
+            //this method wasn't working until making an explicit association between the id in the annotation/method and userTask
+            userTask.UserTaskId = id;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (userTask == null)
+            {
+                return NotFound();
+            }
+            context.UserTask.Update(userTask);
+            context.SaveChanges();
+
+            return Ok(userTask);
+
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try {
+                UserTask userTask = context.UserTask.Single(u => u.UserTaskId == id);
+                if (userTask == null)
+                {
+                    return NotFound();
+                }
+
+                context.UserTask.Remove(userTask);
+                context.SaveChanges();
+
+                return Ok();
+            }
+            catch (System.InvalidOperationException ex)
+            {
+                return NotFound();
+            }
+            }
+
+
+
+        private bool UserTaskExists(int id)
+        {
+            return context.UserTask.Count(e => e.UserTaskId == id) > 0;
         }
     }
 }
