@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bangazon_Task_Tracker.Data;
 using Bangazon_Task_Tracker.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bangazon_Task_Tracker.Controllers
 {
@@ -37,7 +39,7 @@ namespace Bangazon_Task_Tracker.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetUserTask")]
         public IActionResult Get(int id)
         {
             if (!ModelState.IsValid)
@@ -63,9 +65,34 @@ namespace Bangazon_Task_Tracker.Controllers
         }
 
         // POST api/values
+        // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        //FromBody means from the body of the request
+        public IActionResult Post([FromBody] UserTask userTask)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            context.UserTask.Add(userTask);
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                if (UserTaskExists(userTask.UserTaskId))
+                {
+                    return new StatusCodeResult(StatusCodes.Status409Conflict);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("GetUserTask", new { id = userTask.UserTaskId }, userTask);
         }
 
         // PUT api/values/5
@@ -78,6 +105,12 @@ namespace Bangazon_Task_Tracker.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+
+        private bool UserTaskExists(int id)
+        {
+            return context.UserTask.Count(e => e.UserTaskId == id) > 0;
         }
     }
 }
