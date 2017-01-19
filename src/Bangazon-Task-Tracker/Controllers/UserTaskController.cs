@@ -72,13 +72,17 @@ namespace Bangazon_Task_Tracker.Controllers
                 return BadRequest(ModelState);
             }
 
-          
-              
+            List<int> numsList = new List<int>();
+
+            var ParsedArray = Enum.GetValues(typeof(UserTask.TaskStatus));
+
+            foreach(var a in ParsedArray)
+            {
+                numsList.Add(Convert.ToInt32(a));
+               
+            }
                 if (status == 2)
                 {
-                    //var parsedStatus =  Enum.Parse(UserTask.TaskStatus, stat);
-                    int e = (int)(UserTask.TaskStatus.Complete);
-                    //TaskStatus MyStatus = (TaskStatus) Enum.Parse(typeof(TaskStatus), "Completed", true);
                     IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.Complete);
                 return Ok(userTasks);
                 }
