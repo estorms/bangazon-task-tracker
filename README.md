@@ -21,7 +21,7 @@ In order to use the app, the following technologies must be installed on your ma
 Then, fork or clone this respository. Open the code in Visual Studio; then, open the `Package Manager` console and run the following command sequence:
 
 
-`Add-Migration [-Name]` 
+`Add-Migration [-Name]`  
 `Update-Database`
 
 Then, run the app. Open your browser of choice and serve the app from URL `localhost://5000/UserTask`. 
