@@ -64,29 +64,38 @@ namespace Bangazon_Task_Tracker.Controllers
             }
         }
 
-        [HttpGet("ByStatus")]
-        public IActionResult ByStatus()
+        [HttpGet("ByStatus/{status}")]
+        public IActionResult ByStatus(int status)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                //var parsedStatus =  Enum.Parse(UserTask.TaskStatus, stat);
-                int e = (int)(UserTask.TaskStatus.Complete);
-                //TaskStatus MyStatus = (TaskStatus) Enum.Parse(typeof(TaskStatus), "Completed", true);
-                IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.Complete);
-
-                if (userTasks == null)
+          
+              
+                if (status == 2)
                 {
-                    return NotFound();
+                    //var parsedStatus =  Enum.Parse(UserTask.TaskStatus, stat);
+                    int e = (int)(UserTask.TaskStatus.Complete);
+                    //TaskStatus MyStatus = (TaskStatus) Enum.Parse(typeof(TaskStatus), "Completed", true);
+                    IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.Complete);
+                return Ok(userTasks);
                 }
-
+                else if (status == 0)
+                {
+                    IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.ToDo);
                 return Ok(userTasks);
             }
-            catch (System.InvalidOperationException ex)
+
+                else if (status == 1)
+                {
+                    IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.InProgress);
+                return Ok(userTasks);
+                }
+   
+
+           else 
             {
                 return NotFound();
             }
