@@ -109,6 +109,11 @@ namespace Bangazon_Task_Tracker.Controllers
             {
                 return NotFound();
             }
+
+            if(userTask.Status == UserTask.TaskStatus.Complete)
+            {
+                userTask.CompletedOn = DateTime.Now;
+            }
             context.UserTask.Update(userTask);
             context.SaveChanges();
 
