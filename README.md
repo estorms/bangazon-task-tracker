@@ -24,4 +24,5 @@ Then, fork or clone this respository. Open the code in Visual Studio; then, open
 `Add-Migration [-Name]`  
 `Update-Database`
 
-Then, run the app. Open your browser of choice and serve the app from URL `localhost://5000/UserTask`. 
+Then, run the app. Open your browser of choice and serve the app from URL `localhost://5000/UserTask`; this returns all user tasks.
+To filter tasks by status, query `UserTask/ByStatus/{id}`
