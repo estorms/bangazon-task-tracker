@@ -72,40 +72,19 @@ namespace Bangazon_Task_Tracker.Controllers
                 return BadRequest(ModelState);
             }
 
-            List<int> numsList = new List<int>();
 
-            var ParsedArray = Enum.GetValues(typeof(UserTask.TaskStatus));
-
-            foreach(var a in ParsedArray)
+            try
             {
-                numsList.Add(Convert.ToInt32(a));
-               
-            }
-                if (status == 2)
-                {
-                    IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.Complete);
-                return Ok(userTasks);
-                }
-                else if (status == 0)
-                {
-                    IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.ToDo);
+                IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == (UserTask.TaskStatus)status);
                 return Ok(userTasks);
             }
 
-                else if (status == 1)
-                {
-                    IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == UserTask.TaskStatus.InProgress);
-                return Ok(userTasks);
-                }
-   
-
-           else 
+           catch  
             {
                 return NotFound();
             }
         }
 
-        // POST api/values
         // POST api/values
         [HttpPost]
         //FromBody means from the body of the request
