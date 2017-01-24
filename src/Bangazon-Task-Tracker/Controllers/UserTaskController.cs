@@ -26,8 +26,8 @@ namespace Bangazon_Task_Tracker.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            //Either method below, i.e., without or without explicit SQL syntax, returns desired result
-            IQueryable<object> UserTasks = context.UserTask; 
+            //Either method below, i.e., with or without explicit syntax, returns desired result
+            IQueryable<object> UserTasks = context.UserTask;
             //IQueryable<object> UserTasks = from userTask in context.UserTask select userTask;
 
             if (UserTasks == null)
@@ -39,7 +39,7 @@ namespace Bangazon_Task_Tracker.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}", Name ="GetUserTask")]
+        [HttpGet("{id}", Name = "GetUserTask")]
         public IActionResult Get(int id)
         {
             if (!ModelState.IsValid)
@@ -64,7 +64,27 @@ namespace Bangazon_Task_Tracker.Controllers
             }
         }
 
-        // POST api/values
+        [HttpGet("ByStatus/{status}")]
+        public IActionResult ByStatus(int status)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            try
+            {
+                IQueryable<UserTask> userTasks = context.UserTask.Where(u => u.Status == (UserTask.TaskStatus)status);
+                return Ok(userTasks);
+            }
+
+           catch  
+            {
+                return NotFound();
+            }
+        }
+
         // POST api/values
         [HttpPost]
         //FromBody means from the body of the request
@@ -109,6 +129,11 @@ namespace Bangazon_Task_Tracker.Controllers
             {
                 return NotFound();
             }
+
+            if (userTask.Status == UserTask.TaskStatus.Complete)
+            {
+                userTask.CompletedOn = DateTime.Now;
+            }
             context.UserTask.Update(userTask);
             context.SaveChanges();
 
@@ -125,7 +150,8 @@ namespace Bangazon_Task_Tracker.Controllers
                 return BadRequest(ModelState);
             }
 
-            try {
+            try
+            {
                 UserTask userTask = context.UserTask.Single(u => u.UserTaskId == id);
                 if (userTask == null)
                 {
@@ -141,7 +167,7 @@ namespace Bangazon_Task_Tracker.Controllers
             {
                 return NotFound();
             }
-            }
+        }
 
 
 
