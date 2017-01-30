@@ -26,12 +26,11 @@ Then, fork or clone this respository. Open the code in Visual Studio; then, open
 
 Then, run the app. Open your browser of choice and serve the app from URL `localhost://5000/UserTask`; this returns all user tasks.
 Tasks are delivered in the following format:
-```"userTaskId": 1,
+"userTaskId": 1,
     "name": "Name",
     "description": "Description",
     "status": 0,
     "completedOn": "DateTime"
-``` 
 1. To retrieve a single task by its Id, send a GET request to localhost://5000/UserTask/{id}
 1. To delete a task, send a DELETE request to localhost://5000/UserTask/{id}
 1. To edit a task, send a PUT request to localhost://5000/UserTask/{id}
