@@ -31,11 +31,11 @@ Tasks are delivered in the following format:
     "name": "Name", 
     "description": "Description", 
     "status": 0, 
-    "completedOn": "DateTime"
+    "completedOn": "DateTime"`
     
 1. To retrieve a single task by its Id, send a GET request to localhost://5000/UserTask/{id}
 1. To delete a task, send a DELETE request to localhost://5000/UserTask/{id}
 1. To edit a task, send a PUT request to localhost://5000/UserTask/{id}
 1. To filter tasks by status, query UserTask/ByStatus/{id} 
-Note that int 0 = "To Do"; int 1 = "In Progress"; int 2 = "Completed"`
+Note that `int 0 = "To Do"; int 1 = "In Progress"; int 2 = "Completed"`
 
